@@ -51,16 +51,24 @@ module Tagtical
       # Method used to ensure list of tags for the given Tag class.
       # Returns a hash with the key being the value from the tag list and the value being the saved tag.
       def find_or_create_tags(*tag_list)
+        find_or_build_or_create_tags(:create!, *tag_list)
+      end
+
+      def find_or_build_tags(*tag_list)
+        find_or_build_or_create_tags(:new, *tag_list)
+      end
+
+      def find_or_build_or_create_tags(operation, *tag_list)
         tag_list = [tag_list].flatten
         return {} if tag_list.empty?
 
         existing_tags = where_any_like(tag_list).all
         tag_list.each_with_object({}) do |value, tag_lookup|
-          tag_lookup[detect_comparable(existing_tags, value) || create!(:value => value)] = value
+          tag_lookup[detect_comparable(existing_tags, value) || send(operation, :value => value)] = value
         end
       end
 
-        # Save disc space by not having to put in "Tagtical::Tag" repeatedly
+      # Save disc space by not having to put in "Tagtical::Tag" repeatedly
       def sti_name
         Tagtical::Tag==self ? nil : super
       end

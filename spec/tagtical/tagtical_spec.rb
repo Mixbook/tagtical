@@ -76,6 +76,29 @@ describe Tagtical do
     end
   end
 
+  describe "Validating" do
+    when_possible_values_specified(:klass => Tag::Skill) do
+
+      before do
+        @taggable = TaggableModel.new(:name => "taggable")
+      end
+
+      it "should not be valid if the tag is not valid and self is a new record" do
+        @taggable.skill_list = "knife, foo"
+        @taggable.should_not be_valid
+        @taggable.errors[:tags].should be_present
+      end
+
+      it "should not be valid if the tag is not valid and self is not a new record" do
+        @taggable.save!
+        @taggable.set_tag_list_on("skill", "knife, foo")
+        @taggable.should_not be_valid
+        @taggable.errors[:tags].should be_present
+      end
+
+    end
+  end
+
   describe "Reloading" do
     it "should save a model instantiated by Model.find" do
       taggable = TaggableModel.create!(:name => "Taggable")

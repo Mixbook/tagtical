@@ -335,7 +335,20 @@ module Tagtical::Taggable
         true
       end
 
+
       private
+
+      def validate_tags
+        tags = []
+        tag_types.each do |tag_type|
+          tag_lists = tag_list_cache_on(tag_type) || {}
+          tag_lists.each do |expanded_tag_types, tag_list|
+            next unless expanded_tag_types.include?(tag_type)
+            tags += tag_type.klass.find_or_build_tags(tag_list.uniq).keys
+          end
+        end
+        self.errors.add(:tags, :invalid, {:value => nil}) unless tags.all?(&:valid?)
+      end
 
       def remove_tag_caches_on(tag_types)
         Array(tag_types).each do |tag_type|
