@@ -338,7 +338,7 @@ module Tagtical::Taggable
 
       private
 
-      def validate_tags
+      def must_have_valid_tags
         tags = []
         tag_types.each do |tag_type|
           tag_lists = tag_list_cache_on(tag_type) || {}
@@ -347,7 +347,9 @@ module Tagtical::Taggable
             tags += tag_type.klass.find_or_build_tags(tag_list.uniq).keys
           end
         end
-        self.errors.add(:tags, :invalid, {:value => nil}) unless tags.all?(&:valid?)
+        tags.each do |tag|
+          tag.errors.to_a.each { |error| self.errors.add(:tags, error) } unless tag.valid?
+        end
       end
 
       def remove_tag_caches_on(tag_types)

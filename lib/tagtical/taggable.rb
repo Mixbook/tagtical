@@ -32,7 +32,7 @@ module Tagtical
 
         has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag, :class_name => "Tagtical::Tagging"
         has_many :tags, :through => :taggings, :class_name => "Tagtical::Tag"
-        before_validation :validate_tags
+        validate :must_have_valid_tags
         
         class_eval do
           def self.taggable?
