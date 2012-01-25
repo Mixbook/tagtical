@@ -27,11 +27,13 @@ class NeedTag < Tagtical::Tag # Tag subclass ending in "Tag"
 end
 class Offering < Tagtical::Tag # Top level
 end
+class BarCraft < Tagtical::Tag
+end
 
 ### END Tag Subclasses ###
 
 class TaggableModel < ActiveRecord::Base
-  acts_as_taggable(:languages, :skills, {:crafts => Tag::FooCraft}, :needs, :offerings)
+  acts_as_taggable(:languages, :skills, {:crafts => Tag::FooCraft}, :needs, :offerings, {:styles => "BarCraft"})
   has_many :untaggable_models
 end
 

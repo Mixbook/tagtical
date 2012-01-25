@@ -356,6 +356,15 @@ describe Tagtical::Tag do
     its(:klass) { should == Tag::Skill }
     its(:scope_name) { should == :skills }
 
+    it "should be initialized by a class name if the name is provided" do
+      type = @klass.new("style", @taggable_model, :class_name => "BarCraft")
+      type.klass.should == BarCraft
+    end
+
+    it "should be able to provide class name through acts_as_taggable" do
+      @klass.cache["style"].first.klass.should == BarCraft
+    end
+
     describe ".find" do
       it "converts string into correct format" do
         {"ClassNames" => "class_name", "photo_tags" => "photo", :photo => "photo"}.each do |input, result|

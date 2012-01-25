@@ -220,7 +220,11 @@ module Tagtical
           case input
           when self then input
           when String, Symbol then new(sanitize(input), taggable_class)
-          when Hash  then input.map { |input, klass| new(sanitize(input), taggable_class, :klass => klass) }
+          when Hash
+            input.map do |input, class_or_string|
+              class_key = class_or_string.is_a?(String) ? :class_name : :klass
+              new(sanitize(input), taggable_class, class_key => class_or_string)
+            end
           when Array then input.map { |c| find(c, taggable_class) }.flatten
           end
         end
@@ -416,6 +420,7 @@ module Tagtical
       end
 
       def find_tag_class!
+        return ActiveSupport::Dependencies.constantize(@class_name) if @class_name
         return Tagtical::Tag if base?
 
         # Logic comes from ActiveRecord::Base#compute_type.
