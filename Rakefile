@@ -10,48 +10,48 @@ begin
 
   Spec::Rake::SpecTask.new('rcov') do |t|
     t.spec_files = FileList["spec/**/*_spec.rb"]
-    t.rcov = true
-    t.rcov_opts = ['--exclude', 'spec']
+    t.rcov       = true
+    t.rcov_opts  = ['--exclude', 'spec']
   end
-  
+
 rescue LoadError
   # RSpec 2.0
   require 'rspec/core/rake_task'
 
   desc 'Default: run specs'
-  task :default => :spec  
+  task :default => :spec
   RSpec::Core::RakeTask.new do |t|
     t.pattern = "spec/**/*_spec.rb"
   end
-  
+
   RSpec::Core::RakeTask.new('rcov') do |t|
-    t.pattern = "spec/**/*_spec.rb"
-    t.rcov = true
+    t.pattern   = "spec/**/*_spec.rb"
+    t.rcov      = true
     t.rcov_opts = ['--exclude', 'spec']
   end
 
 rescue LoadError
-  puts "RSpec not available. Install it with: gem install rspec"  
+  puts "RSpec not available. Install it with: gem install rspec"
 end
 
 namespace 'rails2.3' do
   task :spec do
     gemfile = File.join(File.dirname(__FILE__), 'lib', 'tagtical', 'compatibility', 'Gemfile')
     ENV['BUNDLE_GEMFILE'] = gemfile
-    Rake::Task['spec'].invoke    
+    Rake::Task['spec'].invoke
   end
 end
 
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "tagtical"
-    gemspec.summary = "Tagtical is a tagging plugin for Rails that provides weighting, contexts, and inheritance for tags."
+    gemspec.name        = "tagtical"
+    gemspec.summary     = "Tagtical is a tagging plugin for Rails that provides weighting, contexts, and inheritance for tags."
     gemspec.description = "Tagtical allows you do create subclasses for Tag and add additional functionality in an STI fashion. For example. You could do Tag::Color.find_by_name('blue').to_rgb. It also supports storing weights or relevance on the taggings."
-    gemspec.email = "aryk@mixbook.com"
-    gemspec.homepage = "https://github.com/Mixbook/tagtical"
-    gemspec.authors = ["Aryk Grosz"]
-    gemspec.files =  FileList["[A-Z]*", "{generators,lib,spec,rails}/**/*"] - FileList["**/*.log"]
+    gemspec.email       = "aryk@mixbook.com"
+    gemspec.homepage    = "https://github.com/Mixbook/tagtical"
+    gemspec.authors     = ["Aryk Grosz"]
+    gemspec.files       = FileList["[A-Z]*", "{generators,lib,spec,rails}/**/*"] - FileList["**/*.log"]
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
