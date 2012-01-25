@@ -29,7 +29,7 @@ describe Tagtical::Tagging do
 
   it "should not be valid with a invalid tag" do
     @tagging.taggable = TaggableModel.create(:name => "Bob Jones")
-    @tagging.tag = Tagtical::Tag.new(:value => "") 
+    @tagging.tag = Tagtical::Tag.new(:value => "")
 
     @tagging.should_not be_valid
 
@@ -69,7 +69,7 @@ describe Tagtical::Tagging do
     it "should throw an error if the relevance is out of range" do
       @taggable.set_tag_list "car:11"
 
-      expect { @taggable.save }.to raise_error
+      expect { @taggable.save! }.to raise_error
     end
   end
 
