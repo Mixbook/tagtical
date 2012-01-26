@@ -1,5 +1,7 @@
 = Tagtical
 
+{<img src="https://secure.travis-ci.org/Mixbook/tagtical.png" />}[http://travis-ci.org/Mixbook/tagtical]
+
 This plugin was originally based on acts_as_taggable_on by Michael Bleigh (http://mbleigh.com/). That plugin
 was based on acts_as_taggable_on_steroids by Jonathan Viney.
 
