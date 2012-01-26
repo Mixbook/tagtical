@@ -13,7 +13,6 @@ gem 'mysql'
 
 #gem 'pg'
 gem 'jeweler'
-gem 'rcov'
 
 group :test do
   gem "mocha"
