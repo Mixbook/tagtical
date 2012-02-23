@@ -246,7 +246,7 @@ describe Tagtical::Tag do
 
     it "should find both tags" do
       lambda {
-        @klass.find_or_create_tags("awesome", "epic")
+        @klass.find_or_create_tags(["awesome", "epic"])
       }.should change(@klass, :count).by(0)
     end
   end
@@ -310,7 +310,7 @@ describe Tagtical::Tag do
 
     it "should find or create by name" do
       lambda {
-        @klass.find_or_create_tags("awesome", "epic").keys.map(&:value).should == ["awesome", "epic"]
+        @klass.find_or_create_tags(["awesome", "epic"]).keys.map(&:value).should == ["awesome", "epic"]
       }.should change(@klass, :count).by(1)
     end
 

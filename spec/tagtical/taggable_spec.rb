@@ -7,6 +7,14 @@ describe Tagtical::Taggable do
   end
   subject { @taggable }
 
+  it "should not use not registered tags" do
+    Tag::Skill.create!(:value => "chess")
+    taggable = OtherTaggableModel.create!
+    taggable.tag_list = "chess, basketball"
+    taggable.save!
+    taggable.tags.any? { |t| t.is_a?(Tag::Skill) }.should be_false
+  end
+
   it "should have tag types" do
     TaggableModel.tag_types.should include("tag", "language", "skill", "craft", "need", "offering")
     @taggable.tag_types.should == TaggableModel.tag_types
@@ -696,7 +704,7 @@ describe Tagtical::Taggable do
     @taggable.tag_list_on(:skills).should == ["hello"]
   end
 
-    #it "should be able to set a custom tag context list" do
+  #it "should be able to set a custom tag context list" do
   #  bob = TaggableModel.create(:name => "Bob")
   #  bob.set_tag_list_on(:rotors, "spinning, jumping")
   #  bob.tag_list_on(:rotors).should == ["spinning","jumping"]
