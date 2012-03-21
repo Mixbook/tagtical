@@ -52,7 +52,11 @@ describe Tagtical::Tagging do
   describe "#tag=" do
     before do
       @tag = Tagtical::Tag.new(:value => "foo")
-      @tagging.tag = @tag
+      if @tagging.respond_to?(:set_tag_target)
+        @tagging.set_tag_target @tag
+      else
+        @tagging.tag = @tag
+      end
     end
 
     it "should set relevance on tag" do
