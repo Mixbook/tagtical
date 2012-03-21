@@ -27,13 +27,18 @@ end
 RSpec::Matchers.define :have_only_tag_values do |expected|
   match do |actual|
     actual = actual.tags if actual.class.respond_to?(:taggable?) && actual.class.taggable?
-    actual.map(&:value).should have_same_elements(expected)
+    same_elements?(actual.map(&:value), expected)
   end
 end
+
 RSpec::Matchers.define :have_same_elements do |expected|
   match do |actual|
-    actual.sort == expected.sort
+    same_elements?(actual, expected)
   end
+end
+
+def same_elements?(actual, expected)
+  actual.sort == expected.sort
 end
 
 # Rspec when we want to work with possible values.
