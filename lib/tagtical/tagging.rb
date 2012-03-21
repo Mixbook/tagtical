@@ -42,9 +42,7 @@ module Tagtical
     relevance <=> tagging.relevance
   end
 
-  if Gem::Version.new(::ActiveRecord::VERSION::STRING) >= Gem::Version.new('3.1.0')
-    # TODO: fix it
-  else
+  if Gem::Version.new(::ActiveRecord::VERSION::STRING) < Gem::Version.new('3.1.0')
     def set_tag_target_with_relevance(tag)
       if tag
         tag = tag.dup

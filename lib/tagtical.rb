@@ -22,7 +22,10 @@ end
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require "tagtical/compatibility/active_record_backports" if ActiveRecord::VERSION::MAJOR < 3
-require "tagtical/compatibility/ar_hacks"
+
+if Gem::Version.new(::ActiveRecord::VERSION::STRING) >= Gem::Version.new('3.1.0')
+  require "tagtical/compatibility/ar_hacks"
+end
 
 require "tagtical/taggable"
 require "tagtical/taggable/core"
