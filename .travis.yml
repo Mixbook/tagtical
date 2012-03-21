@@ -5,3 +5,8 @@ rvm:
 
 before_script:
   - "mysql -e 'create database tagtical;'"
+
+gemfile:
+  - gemfiles/Gemfile-rails.3.0.x
+  - gemfiles/Gemfile-rails.3.1.x
+  - Gemfile
