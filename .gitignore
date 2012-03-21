@@ -4,3 +4,4 @@
 .bundle
 .rvmrc
 spec/database.yml
+Gemfile.lock
