@@ -308,6 +308,22 @@ describe Tagtical::Taggable do
     TaggableModel.tagged_with("ruby").first.should == @taggable
   end
 
+  describe "finding records with empty tags" do
+    before do
+      TaggableModel.create!(:name => "Ted")
+      TaggableModel.create!(:name => "Tom", :skill_list => "ruby, rails, css")
+      TaggableModel.create!(:name => "Fiona", :language_list => "english, spanish")
+    end
+
+    it "should be able to find them by passing the tag type name" do
+      TaggableModel.filter_by_empty_tags(:skill).map(&:name).should == %w{Ted Fiona}
+    end
+
+    it "should be able to find them by passing the array of tag type names" do
+      TaggableModel.filter_by_empty_tags([:skill, "language"]).map(&:name).should == %w{Ted}
+    end
+  end
+
   it "should be able to find by tag with context" do
     @taggable.skill_list = "ruby, rails, css"
     @taggable.tag_list = "bob, charlie"

@@ -8,6 +8,30 @@ module Tagtical::Taggable
         after_save :save_tags
 
         initialize_tagtical_core
+
+        # Handy scope for filtering records, which *doesn't* have associated tags
+        scope :filter_by_empty_tags, lambda { |empty_tags_type_names|
+          empty_tag_types = tag_types.select do |tag_type|
+            Array.wrap(empty_tags_type_names).map(&:to_s).include?(tag_type)
+          end
+          empty_tag_type_classes = empty_tag_types.map { |t| t.klass.to_s }
+          if empty_tag_type_classes.present?
+            tagging_table = Tagtical::Tagging.arel_table
+            tag_table = Tagtical::Tag.arel_table
+            joins(
+              arel_table.
+                join(tagging_table, Arel::Nodes::OuterJoin).
+                  on(arel_table[:id].eq(tagging_table[:taggable_id]).and(tagging_table[:taggable_type].eq(name))).
+                join(tag_table, Arel::Nodes::OuterJoin).
+                  on(tag_table[:id].eq(tagging_table[:tag_id]).and(tag_table[:type].in(empty_tag_type_classes)))
+                .join_sql
+            ).
+              group("#{table_name}.id").
+              having("GROUP_CONCAT(tags.type) IS NULL")
+          else
+            scoped
+          end
+        }
       end
     end
 
