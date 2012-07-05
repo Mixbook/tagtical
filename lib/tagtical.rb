@@ -39,12 +39,14 @@ require "tagtical/tag"
 require "tagtical/tag_list"
 require "tagtical/tags_helper"
 require "tagtical/tagging"
+require "tagtical/tag_group"
 
 $LOAD_PATH.shift
 
 if defined?(ActiveRecord::Base)
   ActiveRecord::Base.extend Tagtical::Taggable
   ActiveRecord::Base.send :include, Tagtical::Tagger
+  ActiveRecord::Base.extend Tagtical::TagGroup
 end
 
 if defined?(ActionView::Base)

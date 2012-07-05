@@ -59,3 +59,9 @@ end
 class UntaggableModel < ActiveRecord::Base
   belongs_to :taggable_model
 end
+
+class CustomGroup < ActiveRecord::Base
+  acts_as_tag_group
+  acts_as_taggable(:skills, :languages)
+  has_many_through_tags :taggable_models
+end
