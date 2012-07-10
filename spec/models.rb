@@ -35,6 +35,9 @@ end
 class TaggableModel < ActiveRecord::Base
   acts_as_taggable(:languages, :skills, {:crafts => Tag::FooCraft}, :needs, :offerings, {:styles => "BarCraft"})
   has_many :untaggable_models
+
+  acts_as_tag_group
+  belongs_to_through_tags :custom_groups
 end
 
 class CachedModel < ActiveRecord::Base
