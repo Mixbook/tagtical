@@ -12,7 +12,7 @@ module Tagtical
           klass.
             joins(:taggings).
             where("#{Tagtical::Tagging.table_name}.`tag_id` IN (?)", taggings.map(&:tag_id)).
-            group("#{klass.table_name}.id").having("count(#{klass.table_name}.id) = ?", taggings.count)
+            group("#{klass.table_name}.id").having(["count(#{klass.table_name}.id) = ?", taggings.count])
         end
       end
 
