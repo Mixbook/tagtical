@@ -359,6 +359,19 @@ module Tagtical::Taggable
         true
       end
 
+      def short_tags(options = {})
+        tag_types = if options[:only].present?
+          self.class.tag_types.select { |tt| Array.wrap(options[:only]).map(&:to_s).include?(tt) }
+        else
+          self.class.tag_types - (options[:exclude] || [])
+        end
+        tag_types.map do |tag_type|
+          self.send(tag_type.has_many_name).map do |tag|
+            "#{tag_type}_#{tag.value}"
+          end
+        end.flatten
+      end
+
 
       private
 
