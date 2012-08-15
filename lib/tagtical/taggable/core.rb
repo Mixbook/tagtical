@@ -14,7 +14,7 @@ module Tagtical::Taggable
           empty_tag_types = tag_types.select do |tag_type|
             Array.wrap(empty_tags_type_names).map(&:to_s).include?(tag_type)
           end
-          empty_tag_type_classes = empty_tag_types.map { |t| t.klass.to_s }
+          empty_tag_type_classes = empty_tag_types.map { |t| t.klass.to_s }.to_a
           if empty_tag_type_classes.present?
             tagging_table = Tagtical::Tagging.arel_table
             tag_table = Tagtical::Tag.arel_table

@@ -16,8 +16,39 @@ describe Tagtical::Taggable do
   end
 
   it "should have tag types" do
-    TaggableModel.tag_types.should include("tag", "language", "skill", "craft", "need", "offering")
+    TaggableModel.tag_types.should include(Tagtical::Tag::Type::BASE, "language", "skill", "craft", "need", "offering")
     @taggable.tag_types.should == TaggableModel.tag_types
+  end
+
+  it "should have custom tag types" do
+    TaggableModel.custom_tag_types.should include("language", "skill", "craft", "need", "offering")
+    TaggableModel.custom_tag_types.should_not include(Tagtical::Tag::Type::BASE)
+    @taggable.custom_tag_types.should == TaggableModel.custom_tag_types
+  end
+
+  it "should have tag types in a custom collection" do
+    TaggableModel.tag_types.should be_is_a(Tagtical::Tag::Type::Collection)
+  end
+
+  it "should have Tagtical::Tag::Type tag type elements" do
+    TaggableModel.tag_types.first.should be_is_a(Tagtical::Tag::Type)
+  end
+
+  describe "tag types collection" do
+
+    it "should return its class instance after executing Array's methods" do
+      TaggableModel.tag_types.select { |t| t == "tag" }.should be_is_a(Tagtical::Tag::Type::Collection)
+    end
+
+    context "get tag types" do
+      specify "by array" do
+        (TaggableModel.tag_types.get(["language", "skill"]) - ["skill", "language"]).should be_empty
+      end
+
+      specify "by item" do
+        TaggableModel.tag_types.get("language").should == "language"
+      end
+    end
   end
 
   it "should have tag_counts_on" do

@@ -469,6 +469,44 @@ module Tagtical
         Array(input).map { |o| taggable_class.find_tag_type!(o).klass }
       end
 
+      # Instead of subclassing from Array, we make a Proxy, so we actually can use method_missing
+      # for catching results and converting them into Collection class if they return Array
+      class Collection
+        def initialize(*args)
+          @array = Array.new(*args)
+        end
+
+        # Usage:
+        #   tag_types.get(["boy", "girl"]) # => ["boy", "girl"]
+        #   tag_types.get("boy")           # => "boy"
+        #   # "boy".class === Tagtical::Tag::Type everywhere
+        def get(tag_type_names)
+          results = @array.select { |tag_type| tag_type_names.include?(tag_type) }
+          tag_type_names.is_a?(Array) ? results : results.first
+        end
+
+        def respond_to?(*args)
+          super || @array.respond_to?(*args)
+        end
+
+        def to_ary
+          @array
+        end
+
+        def to_a
+          @array
+        end
+
+        def method_missing(name, *args)
+          result = if block_given?
+            @array.send(name, *args)  { |*block_args| yield(*block_args) }
+          else
+            @array.send(name, *args)
+          end
+          result.is_a?(@array.class) ? self.class.new(result) : result
+        end
+      end
+
     end
   end
 end
