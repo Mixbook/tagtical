@@ -369,7 +369,7 @@ module Tagtical::Taggable
           self.send(tag_type.has_many_name).map do |tag|
             "#{tag_type}_#{tag.value}"
           end
-        end.flatten
+        end.flatten.to_a
       end
 
 

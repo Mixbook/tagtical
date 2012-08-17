@@ -2,18 +2,18 @@ module Tagtical
   module Taggable
     module TagGroup
 
-      def has_many_through_tags(association_id, type = :subset)
+      def has_many_through_tags(association_id, type = :subset, options = {})
         case type
-        when :subset then has_many_through_tags_subset(association_id)
-        when :superset then has_many_through_tags_superset(association_id)
+        when :subset then has_many_through_tags_subset(association_id, options)
+        when :superset then has_many_through_tags_superset(association_id, options)
         else raise "Wrong association type, should be :subset or :superset"
         end
       end
 
       private
 
-        def has_many_through_tags_superset(association_id)
-          define_method(association_id) do
+        def has_many_through_tags_superset(association_id, options)
+          define_method(options[:as] || association_id) do
             result = instance_variable_get("@#{association_id}")
             result ||= begin
               klass = association_id.to_s.singularize.camelize.constantize
@@ -34,8 +34,8 @@ module Tagtical
           end
         end
 
-        def has_many_through_tags_subset(association_id)
-          define_method(association_id) do
+        def has_many_through_tags_subset(association_id, options)
+          define_method(options[:as] || association_id) do
             result = instance_variable_get("@#{association_id}")
             result ||= begin
               klass = association_id.to_s.singularize.camelize.constantize
