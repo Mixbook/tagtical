@@ -13,10 +13,10 @@ module Tagtical
       private
 
         def has_many_through_tags_superset(association_id, options)
-          define_method(options[:as] || association_id) do
+          define_method(association_id) do
             result = instance_variable_get("@#{association_id}")
             result ||= begin
-              klass = association_id.to_s.singularize.camelize.constantize
+              klass = (options[:class_name] || association_id.to_s.singularize.camelize).constantize
               klass.
                 joins(
                   "LEFT JOIN #{Tagtical::Tagging.table_name} AS t1 " +
@@ -35,10 +35,10 @@ module Tagtical
         end
 
         def has_many_through_tags_subset(association_id, options)
-          define_method(options[:as] || association_id) do
+          define_method(association_id) do
             result = instance_variable_get("@#{association_id}")
             result ||= begin
-              klass = association_id.to_s.singularize.camelize.constantize
+              klass = (options[:class_name] || association_id.to_s.singularize.camelize).constantize
               klass.
                 joins(:taggings).
                 where("#{Tagtical::Tagging.table_name}.`tag_id` IN (?)", taggings.map(&:tag_id)).
