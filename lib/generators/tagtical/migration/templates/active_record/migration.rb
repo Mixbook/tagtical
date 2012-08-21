@@ -2,7 +2,7 @@ class TagticalMigration < ActiveRecord::Migration
   def self.up
     create_table :tags do |t|
       t.string :value
-      t.string :type
+      t.string :type, :limit => 100
     end
     add_index :tags, [:type, :value], :unique => true
     add_index :tags, :value
@@ -13,9 +13,9 @@ class TagticalMigration < ActiveRecord::Migration
 
       # You should make sure that the column created is
       # long enough to store the required class names.
-      t.references :taggable, :polymorphic => true
+      t.references :taggable, :polymorphic => true, :limit => 100
       if Tagtical.config.polymorphic_tagger?
-        t.references :tagger, :polymorphic => true
+        t.references :tagger, :polymorphic => true, :limit => 100
       else
         t.integer :tagger_id
       end
