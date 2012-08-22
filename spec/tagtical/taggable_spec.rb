@@ -27,17 +27,17 @@ describe Tagtical::Taggable do
   end
 
   it "should have tag types in a custom collection" do
-    TaggableModel.tag_types.should be_is_a(Tagtical::Tag::Type::Collection)
+    TaggableModel.tag_types.should be_a(Tagtical::Tag::Type::Collection)
   end
 
   it "should have Tagtical::Tag::Type tag type elements" do
-    TaggableModel.tag_types.first.should be_is_a(Tagtical::Tag::Type)
+    TaggableModel.tag_types.first.should be_a(Tagtical::Tag::Type)
   end
 
   describe "tag types collection" do
 
     it "should return its class instance after executing Array's methods" do
-      TaggableModel.tag_types.select { |t| t == "tag" }.should be_is_a(Tagtical::Tag::Type::Collection)
+      TaggableModel.tag_types.select { |t| t == "tag" }.should be_a(Tagtical::Tag::Type::Collection)
     end
 
     context "get tag types" do
