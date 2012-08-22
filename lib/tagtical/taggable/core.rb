@@ -372,7 +372,7 @@ module Tagtical::Taggable
           self.class.tag_types - Array.wrap(options[:exclude]).compact.map(&:to_s)
         end
         tag_types.map do |tag_type|
-          self.send(tag_type.has_many_name).map do |tag|
+          send(tag_type.has_many_name).map do |tag|
             "#{tag_type}_#{tag.value}"
           end
         end.flatten.to_a
