@@ -39,6 +39,8 @@ parsed.
 
 7. Custom contexts are *not* supported since we use STI. That is, you must define a set of tag types
 ahead of time.
+8. Functionality for joining across tags (seeing which tags two different models have in common)
+with both superset and subset matching.
 
 Additions include:
 1. Scopes are created on Tag so you can do photo.tags.color and grab all the tags of type Tag::Color, for example.
@@ -282,6 +284,40 @@ just define the subclass and the code will automatically instantiate it as that 
 
 Now moving forward, these classes will be instantiated with this model. Wow cool!
 
+=== Tag Groups
+
+This functionality allows to join models across tags (seeing which tags two different models have in common)
+with both superset and subset matching.
+
+You can do it simply by providing :has_many_through_tags call in taggable model, like:
+
+    class User < ActiveRecord::Base
+      acts_as_taggable :skills
+      has_many_through_tags :schools, :superset
+    end
+
+    class School < ActiveRecord::Base
+      acts_as_taggable :skills
+      has_many_through_tags :users # :subset is default
+    end
+
+So, users can study in a school only if they have all the required skills. We want to get
+list of all schools of a user and all users of a school.
+
+    school1.skill_list = "math, biology"
+    school2.skill_list = "programming, chemistry"
+    user.skill_list = "chemistry, math, biology"
+
+    user.schools # => [school1]
+    school1.users # => [user]
+    school2.users # => []
+
+You also may specify different class name, if you want to name your association differently:
+
+    class User < ActiveRecord::Base
+      acts_as_taggable :skills
+      has_many_through_tags :possible_schools, :superset, class_name: "School"
+    end
 
 === Tag Ownership
 
