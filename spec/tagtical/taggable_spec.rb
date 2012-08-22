@@ -20,10 +20,11 @@ describe Tagtical::Taggable do
     @taggable.tag_types.should == TaggableModel.tag_types
   end
 
-  it "should have custom tag types" do
-    TaggableModel.custom_tag_types.should include("language", "skill", "craft", "need", "offering")
-    TaggableModel.custom_tag_types.should_not include(Tagtical::Tag::Type::BASE)
-    @taggable.custom_tag_types.should == TaggableModel.custom_tag_types
+  describe ".custom_tag_types" do
+    subject { TaggableModel.custom_tag_types }
+    it { should include("language", "skill", "craft", "need", "offering") }
+    it { should_not include(Tagtical::Tag::Type::BASE) }
+    it { should == @taggable.custom_tag_types }
   end
 
   it "should have tag types in a custom collection" do
