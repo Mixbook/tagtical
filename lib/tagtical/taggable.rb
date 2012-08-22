@@ -49,8 +49,10 @@ module Tagtical
         extend Tagtical::Taggable::TagGroup
 
       end
-      yield if block_given?
 
+      # Purpose of this is to keep additional tagtical class level methods grouped
+      # together with the acts_as_taggable call.
+      yield if block_given?
     end
   end
 end
