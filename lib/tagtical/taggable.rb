@@ -19,7 +19,7 @@ module Tagtical
     #   class User < ActiveRecord::Base
     #     acts_as_taggable :languages, :skills
     #   end
-    def acts_as_taggable(*tag_types, &block)
+    def acts_as_taggable(*tag_types)
       tag_types.flatten!
       tag_types << Tagtical::Tag::Type::BASE # always include the base type.
       tag_types = Tagtical::Tag::Type::Collection.new(Tagtical::Tag::Type.register(tag_types.uniq.compact, self))
@@ -49,7 +49,7 @@ module Tagtical
         extend Tagtical::Taggable::TagGroup
 
       end
-      block.call if block_given?
+      yield if block_given?
 
     end
   end
