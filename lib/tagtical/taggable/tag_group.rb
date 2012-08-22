@@ -14,8 +14,7 @@ module Tagtical
 
         def has_many_through_tags_superset(association_id, options)
           define_method(association_id) do
-            result = instance_variable_get("@#{association_id}")
-            result ||= begin
+            result = instance_variable_get("@#{association_id}") || begin
               klass = (options[:class_name] || association_id.to_s.singularize.camelize).constantize
               klass.
                 joins(
@@ -36,8 +35,7 @@ module Tagtical
 
         def has_many_through_tags_subset(association_id, options)
           define_method(association_id) do
-            result = instance_variable_get("@#{association_id}")
-            result ||= begin
+            result = instance_variable_get("@#{association_id}") || begin
               klass = (options[:class_name] || association_id.to_s.singularize.camelize).constantize
               klass.
                 joins(:taggings).
