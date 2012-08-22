@@ -359,11 +359,17 @@ module Tagtical::Taggable
         true
       end
 
+      # Returns flat list of tag classes and tag values.
+      #
+      #   taggable.update_attributes!(gender_list: "boy, girl", skill_list: "ruby")
+      #   taggable.short_tags                   # => %w(gender_boy gender_girl skill_ruby tag_boy tag_girl tag_ruby)
+      #   taggable.short_tags(only: :gender)    # => %w(gender_boy gender_girl)
+      #   taggable.short_tags(exclude: :gender) # => %w(skill_ruby tag_boy tag_girl tag_ruby)
       def short_tags(options = {})
         tag_types = if options[:only].present?
           self.class.tag_types.select { |tt| Array.wrap(options[:only]).map(&:to_s).include?(tt) }
         else
-          self.class.tag_types - (options[:exclude] || [])
+          self.class.tag_types - Array.wrap(options[:exclude]).compact.map(&:to_s)
         end
         tag_types.map do |tag_type|
           self.send(tag_type.has_many_name).map do |tag|

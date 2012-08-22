@@ -61,6 +61,15 @@ describe Tagtical::Taggable do
     @taggable.tag_counts_on(:tags).length.should == 2
   end
 
+  describe ".short_tags" do
+    subject { @taggable }
+    before { subject.update_attributes!(skill_list: %w(ruby rails), tag_list: %w(red)) }
+
+    its(:short_tags) { should == %w(skill_ruby skill_rails tag_red tag_ruby tag_rails) }
+    specify { subject.short_tags(only: :skill).should == %w(skill_ruby skill_rails) }
+    specify { subject.short_tags(exclude: :skill).should == %w(tag_red tag_ruby tag_rails) }
+  end
+
   it "should be able to create tags" do
     @taggable.skill_list = "ruby, rails, css"
     @taggable.tag_list_on(:skills).should be_an_instance_of(Tagtical::TagList)
