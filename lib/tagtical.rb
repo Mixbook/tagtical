@@ -33,6 +33,7 @@ require "tagtical/taggable/collection"
 require "tagtical/taggable/cache"
 require "tagtical/taggable/ownership"
 require "tagtical/taggable/related"
+require "tagtical/taggable/tag_group"
 
 require "tagtical/acts_as_tagger"
 require "tagtical/tag"
