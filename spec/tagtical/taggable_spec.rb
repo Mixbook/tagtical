@@ -42,7 +42,7 @@ describe Tagtical::Taggable do
 
     context "get tag types" do
       specify "by array" do
-        (TaggableModel.tag_types.get(["language", "skill"]) - ["skill", "language"]).should be_empty
+        TaggableModel.tag_types.get(["language", "skill"]).should =~ ["skill", "language"]
       end
 
       specify "by item" do
