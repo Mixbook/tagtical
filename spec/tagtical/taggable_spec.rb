@@ -27,12 +27,10 @@ describe Tagtical::Taggable do
     it { should == @taggable.custom_tag_types }
   end
 
-  it "should have tag types in a custom collection" do
-    TaggableModel.tag_types.should be_a(Tagtical::Tag::Type::Collection)
-  end
-
-  it "should have Tagtical::Tag::Type tag type elements" do
-    TaggableModel.tag_types.first.should be_a(Tagtical::Tag::Type)
+  describe ".tag_types" do
+    subject { TaggableModel.tag_types }
+    it { should be_a(Tagtical::Tag::Type::Collection) }
+    its(:first) { should be_a(Tagtical::Tag::Type) }
   end
 
   describe "tag types collection" do
