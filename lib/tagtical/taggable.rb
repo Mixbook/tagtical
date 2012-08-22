@@ -22,13 +22,14 @@ module Tagtical
     def acts_as_taggable(*tag_types)
       tag_types.flatten!
       tag_types << Tagtical::Tag::Type::BASE # always include the base type.
-      tag_types = Tagtical::Tag::Type.register(tag_types.uniq.compact, self)
+      tag_types = Tagtical::Tag::Type::Collection.new(Tagtical::Tag::Type.register(tag_types.uniq.compact, self))
 
       if taggable?
         self.tag_types = (self.tag_types + tag_types).uniq
       else
-        class_attribute(:tag_types)
+        class_attribute :tag_types, :custom_tag_types
         self.tag_types = tag_types
+        self.custom_tag_types = tag_types - [Tagtical::Tag::Type::BASE]
 
         has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag, :class_name => "Tagtical::Tagging"
         has_many :tags, :through => :taggings, :class_name => "Tagtical::Tag"
@@ -45,9 +46,13 @@ module Tagtical
         include Tagtical::Taggable::Cache
         include Tagtical::Taggable::Ownership
         include Tagtical::Taggable::Related
+        extend Tagtical::Taggable::TagGroup
 
       end
 
+      # Purpose of this is to keep additional tagtical class level methods grouped
+      # together with the acts_as_taggable call.
+      yield if block_given?
     end
   end
 end

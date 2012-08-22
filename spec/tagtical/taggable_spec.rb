@@ -16,8 +16,38 @@ describe Tagtical::Taggable do
   end
 
   it "should have tag types" do
-    TaggableModel.tag_types.should include("tag", "language", "skill", "craft", "need", "offering")
+    TaggableModel.tag_types.should include(Tagtical::Tag::Type::BASE, "language", "skill", "craft", "need", "offering")
     @taggable.tag_types.should == TaggableModel.tag_types
+  end
+
+  describe ".custom_tag_types" do
+    subject { TaggableModel.custom_tag_types }
+    it { should include("language", "skill", "craft", "need", "offering") }
+    it { should_not include(Tagtical::Tag::Type::BASE) }
+    it { should == @taggable.custom_tag_types }
+  end
+
+  describe ".tag_types" do
+    subject { TaggableModel.tag_types }
+    it { should be_a(Tagtical::Tag::Type::Collection) }
+    its(:first) { should be_a(Tagtical::Tag::Type) }
+  end
+
+  describe "tag types collection" do
+
+    it "should return its class instance after executing Array's methods" do
+      TaggableModel.tag_types.select { |t| t == "tag" }.should be_a(Tagtical::Tag::Type::Collection)
+    end
+
+    context "get tag types" do
+      specify "by array" do
+        TaggableModel.tag_types.get(["language", "skill"]).should =~ ["skill", "language"]
+      end
+
+      specify "by item" do
+        TaggableModel.tag_types.get("language").should == "language"
+      end
+    end
   end
 
   it "should have tag_counts_on" do
@@ -28,6 +58,15 @@ describe Tagtical::Taggable do
 
     TaggableModel.tag_counts_on(:tags).length.should == 2
     @taggable.tag_counts_on(:tags).length.should == 2
+  end
+
+  describe ".short_tags" do
+    subject { @taggable }
+    before { subject.update_attributes!(skill_list: %w(ruby rails), tag_list: %w(red)) }
+
+    its(:short_tags) { should == %w(skill_ruby skill_rails tag_red tag_ruby tag_rails) }
+    specify { subject.short_tags(only: :skill).should == %w(skill_ruby skill_rails) }
+    specify { subject.short_tags(exclude: :skill).should == %w(tag_red tag_ruby tag_rails) }
   end
 
   it "should be able to create tags" do

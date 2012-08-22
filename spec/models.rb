@@ -35,6 +35,7 @@ end
 class TaggableModel < ActiveRecord::Base
   acts_as_taggable(:languages, :skills, {:crafts => Tag::FooCraft}, :needs, :offerings, {:styles => "BarCraft"})
   has_many :untaggable_models
+  has_many_through_tags :custom_groups, :superset
 end
 
 class CachedModel < ActiveRecord::Base
@@ -58,4 +59,10 @@ end
 
 class UntaggableModel < ActiveRecord::Base
   belongs_to :taggable_model
+end
+
+class CustomGroup < ActiveRecord::Base
+  acts_as_taggable(:skills, :languages) do
+    has_many_through_tags :taggable_models
+  end
 end
