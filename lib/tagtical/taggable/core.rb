@@ -23,8 +23,8 @@ module Tagtical::Taggable
                 join(tagging_table, Arel::Nodes::OuterJoin).
                   on(arel_table[:id].eq(tagging_table[:taggable_id]).and(tagging_table[:taggable_type].eq(name))).
                 join(tag_table, Arel::Nodes::OuterJoin).
-                  on(tag_table[:id].eq(tagging_table[:tag_id]).and(tag_table[:type].in(empty_tag_type_classes)))
-                .join_sql
+                  on(tag_table[:id].eq(tagging_table[:tag_id]).and(tag_table[:type].in(empty_tag_type_classes))).
+                join_sql
             ).
               group("#{table_name}.id").
               having("GROUP_CONCAT(tags.type) IS NULL")
