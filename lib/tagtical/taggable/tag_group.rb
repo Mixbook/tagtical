@@ -8,6 +8,7 @@ module Tagtical
         when :superset then has_many_through_tags_superset(association_id, options)
         else raise "Wrong association type, should be :subset or :superset"
         end
+        after_save { instance_variable_set("@#{association_id}", nil) }
       end
 
       private
