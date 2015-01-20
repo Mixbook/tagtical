@@ -109,12 +109,15 @@ module Tagtical::Taggable
         #   taggable_model.tags(true, :scope => :current) <-- reloads the tags association and appends scope for only current type.
       def define_tag_scope(tag_type)
         if tag_type.has_many_name==:tags
-          define_method("tags_with_finder_type_options") do |*args|
-            bool = args.shift if [true, false].include?(args.first)
-            tags = tags_without_finder_type_options(bool)
-            args.empty? ? tags : tags_with_type_scoping(tag_type, *args)
+          # Mixbok 3.2: make sure we are adding alias_method_chain only once there  seems to be many invocations of define_tag_scope and ths leads to StackLevelTooDeep
+          if instance_methods.include?(:tags_with_finder_type_options)
+            define_method("tags_with_finder_type_options") do |*args|
+              bool = args.shift if [true, false].include?(args.first)
+              tags = tags_without_finder_type_options(bool)
+              args.empty? ? tags : tags_with_type_scoping(tag_type, *args)
+            end
+            alias_method_chain :tags, :finder_type_options
           end
-          alias_method_chain :tags, :finder_type_options
         else # handle the Tagtical::Tag subclasses
           define_method(tag_type.scope_name) do |*args|
             if tags.loaded?
