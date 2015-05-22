@@ -17,6 +17,7 @@ module Tagtical
           define_method(association_id) do
             result = instance_variable_get("@#{association_id}") || begin
               klass = (options[:class_name] || association_id.to_s.singularize.camelize).constantize
+              self_class = options[:base_class] && options[:base_class].constantize || self.class
               klass.
                 joins(
                   "LEFT JOIN #{Tagtical::Tagging.table_name} AS t1 " +
@@ -24,7 +25,7 @@ module Tagtical
                 ).
                 joins(
                   "LEFT JOIN #{Tagtical::Tagging.table_name} AS t2 " +
-                  "ON t2.tag_id = t1.tag_id AND t2.taggable_type = '#{self.class}' AND t2.taggable_id = #{id}"
+                  "ON t2.tag_id = t1.tag_id AND t2.taggable_type = '#{self_class}' AND t2.taggable_id = #{id}"
                 ).
                 group("#{klass.table_name}.id").
                 having("COUNT(t2.tag_id) = COUNT(#{klass.table_name}.id)")
