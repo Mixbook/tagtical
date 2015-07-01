@@ -109,13 +109,11 @@ module Tagtical::Taggable
         #   taggable_model.tags(true, :scope => :current) <-- reloads the tags association and appends scope for only current type.
       def define_tag_scope(tag_type)
         if tag_type.has_many_name==:tags
-          self.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def tags(*args)
-              reload_assoc = args.shift if [true, false].include?(args.first)
-              result = super(reload_assoc)
-              args.empty? ? result : tags_with_type_scoping(tag_type, *args)
-            end
-          RUBY
+          define_method :tags do |*args|
+            reload_assoc = args.shift if [true, false].include?(args.first)
+            result = super(reload_assoc)
+            args.empty? ? result : tags_with_type_scoping(tag_type, *args)
+          end
         else # handle the Tagtical::Tag subclasses
           define_method(tag_type.scope_name) do |*args|
             if tags.loaded?
