@@ -51,7 +51,7 @@ module Tagtical::Taggable
           Tagtical::Tag.define_scope_for_type(tag_type)
 
           define_tag_scope(tag_type)
-          
+
           define_has_tag_scope(tag_type)
 
           class_eval <<-RUBY, __FILE__, __LINE__ + 1
@@ -109,12 +109,11 @@ module Tagtical::Taggable
         #   taggable_model.tags(true, :scope => :current) <-- reloads the tags association and appends scope for only current type.
       def define_tag_scope(tag_type)
         if tag_type.has_many_name==:tags
-          define_method("tags_with_finder_type_options") do |*args|
-            bool = args.shift if [true, false].include?(args.first)
-            tags = tags_without_finder_type_options(bool)
-            args.empty? ? tags : tags_with_type_scoping(tag_type, *args)
+          define_method :tags do |*args|
+            reload_assoc = args.shift if [true, false].include?(args.first)
+            result = super(reload_assoc)
+            args.empty? ? result : tags_with_type_scoping(tag_type, *args)
           end
-          alias_method_chain :tags, :finder_type_options
         else # handle the Tagtical::Tag subclasses
           define_method(tag_type.scope_name) do |*args|
             if tags.loaded?
@@ -419,7 +418,7 @@ module Tagtical::Taggable
       def tags_with_type_scoping(tag_type, *args)
         tags.scoped.merge(tag_type.scoping(*args))
       end
-      
+
       # Lets say tag class A inherits from B and B has a tag with value "foo". If we tag A with value "foo",
       # we want B to have only one instance of "foo" and that tag should be an instance of A (a subclass of B).
       def update_tagging_with_inherited_tag!(tagging, tags, tag_value_lookup)
