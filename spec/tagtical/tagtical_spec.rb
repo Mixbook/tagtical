@@ -1,4 +1,4 @@
-require File.expand_path('../../spec_helper', __FILE__)
+require 'spec_helper'
 
 describe Tagtical do
   before(:each) do
@@ -363,5 +363,4 @@ describe Tagtical do
       @taggable.tag_list.sort.should == %w(awesome epic).sort
     end
   end
-
 end

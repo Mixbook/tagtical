@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{tagtical}
-  s.version = "1.6.3"
+  s.version = "1.6.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Aryk Grosz"]
@@ -18,10 +18,9 @@ Gem::Specification.new do |s|
 
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "~> 3.0"
-
+  s.add_dependency "rails", "~> 4.0.0"
+  s.add_dependency 'protected_attributes'
   s.add_development_dependency "sqlite3"
-  s.add_development_dependency "mysql"
-  s.add_development_dependency "rspec"
+  s.add_development_dependency "mysql2"
+  s.add_development_dependency "rspec", '~> 2.0'
 end
-

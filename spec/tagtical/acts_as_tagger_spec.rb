@@ -1,40 +1,40 @@
-require File.expand_path('../../spec_helper', __FILE__)
+require 'spec_helper'
 
 describe "acts_as_tagger" do
-  before(:each) do
+  before do
     clean_database!
   end
-  
+
   describe "Tagger Method Generation" do
-    before(:each) do
+    before do
       @tagger = TaggableUser.new()
     end
 
     it "should add #is_tagger? query method to the class-side" do
       TaggableUser.should respond_to(:is_tagger?)
     end
-    
+
     it "should return true from the class-side #is_tagger?" do
-      TaggableUser.is_tagger?.should be_true
+      TaggableUser.is_tagger?.should be true
     end
-    
+
     it "should return false from the base #is_tagger?" do
-      ActiveRecord::Base.is_tagger?.should be_false
+      ActiveRecord::Base.is_tagger?.should be false
     end
-    
+
     it "should add #is_tagger? query method to the singleton" do
       @tagger.should respond_to(:is_tagger?)
     end
-    
+
     it "should add #tag method on the instance-side" do
       @tagger.should respond_to(:tag)
     end
-    
+
     it "should generate an association for #owned_taggings and #owned_tags" do
       @tagger.should respond_to(:owned_taggings, :owned_tags)
     end
   end
-  
+
   describe "#tag" do
     context 'when called with a non-existent tag context' do
       before(:each) do
@@ -80,7 +80,7 @@ describe "acts_as_tagger" do
       end
 
       it "should not delete other taggers tags" do
-        @user_x.owned_tags.should have(2).items
+        expect(@user_x.owned_tags.size).to eq 2
       end
 
       it "should not delete original tags" do

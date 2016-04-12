@@ -66,7 +66,7 @@ module Tagtical
         if tag_types.present?
           existing_tags = existing_tags.where(["type IS NULL OR type IN (?)", tag_types.map(&:klass).map(&:to_s)])
         end
-        existing_tags = existing_tags.all
+        existing_tags = existing_tags.to_a
         tag_list.each_with_object({}) do |value, tag_lookup|
           tag_lookup[detect_comparable(existing_tags, value) || send(operation, :value => value)] = value
         end
@@ -299,12 +299,12 @@ module Tagtical
         condition = sti_column.eq(sti_names.delete(nil)) if sti_names.include?(nil)
         sti_names_condition = sti_column.in(sti_names)
         condition = condition ? condition.or(sti_names_condition) : sti_names_condition
-        
+
         if condition && sql
           condition = condition.to_sql
           condition.insert(0, " AND ") if sql==:append
         end
-        
+
         condition
       end
 

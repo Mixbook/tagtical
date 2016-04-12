@@ -1,7 +1,11 @@
 require "active_record"
 require "action_view"
+require "active_support/core_ext/hash"
 require "active_support/hash_with_indifferent_access"
 require "active_support/ordered_options"
+require "active_support/core_ext/module"
+
+require "protected_attributes"
 
 module Tagtical
 

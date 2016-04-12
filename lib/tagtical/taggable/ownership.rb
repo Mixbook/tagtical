@@ -20,7 +20,7 @@ module Tagtical::Taggable
           class_eval <<-RUBY, __FILE__, __LINE__ + 1
             def #{tag_type.pluralize}_from(owner)
               owner_tag_list_on(owner, '#{tag_type}')
-            end      
+            end
           RUBY
         end
       end
@@ -29,11 +29,13 @@ module Tagtical::Taggable
     module InstanceMethods
       def owner_tags_on(owner, context, options={})
         scope = tag_scope(context, options)
+
         if owner
           scope = scope.where([%{#{Tagtical::Tagging.table_name}.tagger_id = ?}, owner.id])
           scope = scope.where([%{#{Tagtical::Tagging.table_name}.tagger_type = ?}, owner.class.to_s]) if Tagtical.config.polymorphic_tagger?
         end
-        scope.all
+
+        scope.to_a
       end
 
       def cached_owned_tag_list_on(context)

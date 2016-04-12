@@ -37,9 +37,11 @@ module Tagtical::Taggable
 
     module ClassMethods
       def initialize_tagtical_core
-        has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag, :class_name => "Tagtical::Tagging"
-        has_many :tags, :through => :taggings, :source => :tag, :class_name => "Tagtical::Tag",
-                 :select => "#{Tagtical::Tag.table_name}.*, #{Tagtical::Tagging.table_name}.relevance as relevance, #{Tagtical::Tagging.table_name}.tagger_id as tagger_id" # include the relevance on the tags
+        # has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag, :class_name => "Tagtical::Tagging"
+        has_many :taggings, -> { includes(:tag) }, :as => :taggable, :dependent => :destroy, :class_name => "Tagtical::Tagging"
+        # has_many :tags, :through => :taggings, :source => :tag, :class_name => "Tagtical::Tag",
+        #         :select => "#{Tagtical::Tag.table_name}.*, #{Tagtical::Tagging.table_name}.relevance as relevance, #{Tagtical::Tagging.table_name}.tagger_id as tagger_id" # include the relevance on the tags
+        has_many :tags, -> { select("#{Tagtical::Tag.table_name}.*, #{Tagtical::Tagging.table_name}.relevance as relevance, #{Tagtical::Tagging.table_name}.tagger_id as tagger_id")}, :through => :taggings, :source => :tag, :class_name => "Tagtical::Tag"
 
         tag_types.each do |tag_type| # has_many :tags gets created here
 
@@ -289,17 +291,18 @@ module Tagtical::Taggable
         else
           scope = scope.group("#{Tagtical::Tag.table_name}.#{Tagtical::Tag.primary_key}")
         end
-        scope.all
+        scope.to_a
       end
 
       ##
       # Returns all tags that aren't owned.
       def tags_on(context, *args)
         scope = tag_scope(context, *args)
+
         if args.empty?
           scope.reject(&:has_tagger?)
         else
-          scope.where("#{Tagtical::Tagging.table_name}.tagger_id IS NULL").all
+          scope.where("#{Tagtical::Tagging.table_name}.tagger_id IS NULL").to_a
         end
       end
 
@@ -331,7 +334,7 @@ module Tagtical::Taggable
 
             # If relevances are specified on current tags, make sure to update those
             tags_requiring_relevance_update = tag_value_lookup.map { |tag, value| tag if !value.relevance.nil? }.compact & current_tags
-            if tags_requiring_relevance_update.present? && (update_taggings = unowned_taggings.find_all_by_tag_id(tags_requiring_relevance_update)).present?
+            if tags_requiring_relevance_update.present? && (update_taggings = unowned_taggings.where(tag_id: tags_requiring_relevance_update).to_a).present?
               update_taggings.each { |tagging| tagging.update_attribute(:relevance, tag_value_lookup[tagging.tag].relevance) }
             end
 
@@ -415,8 +418,10 @@ module Tagtical::Taggable
         (@expand_tag_types ||= {})[[input, args]] ||= find_tag_type!(input).expand_tag_types(*args)
       end
 
+      # http://stackoverflow.com/questions/18198963/with-rails-4-model-scoped-is-deprecated-but-model-all-cant-replace-it
       def tags_with_type_scoping(tag_type, *args)
-        tags.scoped.merge(tag_type.scoping(*args))
+        # tags.scoped.merge(tag_type.scoping(*args))
+        tags.where(nil).merge(tag_type.scoping(*args))
       end
 
       # Lets say tag class A inherits from B and B has a tag with value "foo". If we tag A with value "foo",

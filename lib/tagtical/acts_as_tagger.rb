@@ -16,9 +16,13 @@ module Tagtical
       def acts_as_tagger(opts={})
         class_eval do
           opts.update(:as => :tagger) if Tagtical.config.polymorphic_tagger?
-          has_many :owned_taggings, opts.merge(:dependent => :destroy,
-                                               :include => :tag, :class_name => "Tagtical::Tagging")
-          has_many :owned_tags, :through => :owned_taggings, :source => :tag, :uniq => true, :class_name => "Tagtical::Tag"
+          # has_many :owned_taggings, opts.merge(:dependent => :destroy,
+          #                                     :include => :tag, :class_name => "Tagtical::Tagging")
+          has_many :owned_taggings, -> { includes(:tag) }, opts.merge(:dependent => :destroy,
+                                               :class_name => "Tagtical::Tagging")
+
+          # has_many :owned_tags, :through => :owned_taggings, :source => :tag, :uniq => true, :class_name => "Tagtical::Tag"
+          has_many :owned_tags, -> { uniq }, :through => :owned_taggings, :source => :tag, :class_name => "Tagtical::Tag"
         end
 
         include Tagtical::Tagger::InstanceMethods
@@ -32,7 +36,7 @@ module Tagtical
 
     module InstanceMethods
       ##
-      # Tag a taggable model with tags that are owned by the tagger. 
+      # Tag a taggable model with tags that are owned by the tagger.
       #
       # @param taggable The object that will be tagged
       # @param [Hash] options An hash with options. Available options are:
