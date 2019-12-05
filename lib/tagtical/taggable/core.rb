@@ -386,7 +386,7 @@ module Tagtical::Taggable
           tag_lists = tag_list_cache_on(tag_type) || {}
           tag_lists.each do |expanded_tag_types, tag_list|
             next unless expanded_tag_types.include?(tag_type)
-            tags += tag_type.klass.find_or_build_tags(tag_list.uniq).keys
+            tags += tag_type.klass.find_or_build_tags(tag_list.uniq, self.tag_types).keys
           end
         end
         tags.each do |tag|
