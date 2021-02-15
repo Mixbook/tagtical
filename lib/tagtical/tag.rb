@@ -1,6 +1,5 @@
 module Tagtical
   class Tag < ::ActiveRecord::Base
-    # attr_accessible :value
     attr_accessor :tagger_id
 
     has_many :taggings, :dependent => :destroy, :class_name => 'Tagtical::Tagging'

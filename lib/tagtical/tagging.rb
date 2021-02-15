@@ -2,14 +2,6 @@ module Tagtical
   class Tagging < ::ActiveRecord::Base #:nodoc:
     include Tagtical::ActiveRecord::Backports if ::ActiveRecord::VERSION::MAJOR < 3
 
-  # attr_accessible :tag,
-  #   :tag_id,
-  #   :taggable,
-  #   :taggable_type,
-  #   :taggable_id,
-  #   :tagger,
-  #   :tagger_id,
-  #   :relevance
 
   belongs_to :tag, :class_name => 'Tagtical::Tag'
   belongs_to :taggable, :polymorphic => true
@@ -22,7 +14,6 @@ module Tagtical
   validate :validate_relevance
 
   if Tagtical.config.polymorphic_tagger?
-    # attr_accessible :tagger_type
     belongs_to :tagger, :polymorphic => true
   else
     belongs_to :tagger, case Tagtical.config.tagger

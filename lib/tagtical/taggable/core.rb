@@ -37,7 +37,7 @@ module Tagtical::Taggable
 
     module ClassMethods
       def initialize_tagtical_core
-        if Rails.version.starts_with?("4")
+        if Rails::VERSION::MAJOR <= 4
           has_many :taggings, -> { includes(:tag) }, :as => :taggable, :dependent => :destroy, :class_name => "Tagtical::Tagging"
         else
           has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag, :class_name => "Tagtical::Tagging"
