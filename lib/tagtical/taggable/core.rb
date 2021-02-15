@@ -37,7 +37,11 @@ module Tagtical::Taggable
 
     module ClassMethods
       def initialize_tagtical_core
-        has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag, :class_name => "Tagtical::Tagging"
+        if Rails.version.starts_with?("4")
+          has_many :taggings, -> { includes(:tag) }, :as => :taggable, :dependent => :destroy, :class_name => "Tagtical::Tagging"
+        else
+          has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag, :class_name => "Tagtical::Tagging"
+        end
         has_many :tags, :through => :taggings, :source => :tag, :class_name => "Tagtical::Tag",
                  :select => "#{Tagtical::Tag.table_name}.*, #{Tagtical::Tagging.table_name}.relevance as relevance, #{Tagtical::Tagging.table_name}.tagger_id as tagger_id" # include the relevance on the tags
 
