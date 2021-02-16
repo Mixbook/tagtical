@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{tagtical}
-  s.version = "1.6.4"
+  s.version = "1.6.5.pre"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Aryk Grosz"]
@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
   s.files = Dir["{rails,generators,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc", "CHANGELOG", "VERSION"]
   s.homepage = %q{https://github.com/Mixbook/tagtical}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.6.2}
   s.summary = %q{Tagtical is a tagging plugin for Rails that provides weighting, contexts, and inheritance for tags.}
 
   s.test_files = Dir["spec/**/*"]

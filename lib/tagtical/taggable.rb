@@ -30,8 +30,11 @@ module Tagtical
         class_attribute :tag_types, :custom_tag_types
         self.tag_types = tag_types
         self.custom_tag_types = tag_types - [Tagtical::Tag::Type::BASE]
-
-        has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag, :class_name => "Tagtical::Tagging"
+        if Rails::VERSION::MAJOR <= 4
+          has_many :taggings, -> { includes(:tag) }, :as => :taggable, :dependent => :destroy, :class_name => "Tagtical::Tagging"
+        else
+          has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag, :class_name => "Tagtical::Tagging"
+        end
         has_many :tags, :through => :taggings, :class_name => "Tagtical::Tag"
         validate :must_have_valid_tags
 

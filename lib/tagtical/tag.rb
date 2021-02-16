@@ -1,6 +1,5 @@
 module Tagtical
   class Tag < ::ActiveRecord::Base
-    attr_accessible :value
     attr_accessor :tagger_id
 
     has_many :taggings, :dependent => :destroy, :class_name => 'Tagtical::Tagging'
@@ -299,12 +298,12 @@ module Tagtical
         condition = sti_column.eq(sti_names.delete(nil)) if sti_names.include?(nil)
         sti_names_condition = sti_column.in(sti_names)
         condition = condition ? condition.or(sti_names_condition) : sti_names_condition
-        
+
         if condition && sql
           condition = condition.to_sql
           condition.insert(0, " AND ") if sql==:append
         end
-        
+
         condition
       end
 
