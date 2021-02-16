@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
   s.files = Dir["{rails,generators,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc", "CHANGELOG", "VERSION"]
   s.homepage = %q{https://github.com/Mixbook/tagtical}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.6.2}
   s.summary = %q{Tagtical is a tagging plugin for Rails that provides weighting, contexts, and inheritance for tags.}
 
   s.test_files = Dir["spec/**/*"]
